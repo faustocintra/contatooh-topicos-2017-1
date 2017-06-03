@@ -3,11 +3,16 @@
    <head>
       <meta name="viewport" content="width=device-width" />
       <meta charset="utf-8" />
+      
+      <!-- build:css css/index.min.css -->
       <link rel="stylesheet" 
          href="vendor/bootstrap/dist/css/bootstrap.css" />
       <link rel="stylesheet"
          href="vendor/bootstrap/dist/css/bootstrap-theme.css" />
+      <!-- endbuild -->
+   
    </head>
+   
    <body class="container">
 
       <% // Este bloco só será exibido se houver usuário logado %>
@@ -25,6 +30,7 @@
 
       <div ng-view></div>
 
+      <!-- build:js js/index.min.js -->
       <script src="vendor/angular/angular.js"></script>
       <script src="vendor/angular-route/angular-route.js"></script>
       <script src="vendor/angular-resource/angular-resource.js"></script>
@@ -33,6 +39,7 @@
       <script src="js/controllers/ContatosController.js"></script>
       <script src="js/controllers/ContatoController.js"></script>
       <script src="js/services/InterceptorService.js"></script>
-   
+      <!-- endbuild -->
+
    </body>
 </html>
