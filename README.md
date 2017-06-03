@@ -15,3 +15,5 @@ ___________
 * A entrega do trabalho deverá ser feita **exclusivamente** por meio de _pull request_ no GitHub.
 
 **PRAZO DE ENTREGA: até 25/06 (domingo), às 23h55**. Trabalhos entregues após o prazo sofrerão desconto de 25% por dia de atraso.
+
+*Teste Guilherme Naldi Stefanelli - Fork
