@@ -49,6 +49,7 @@ module.exports = function(app) {
 
    controller.salvaContato = function(req, res) {
 		var _id = req.body._id;
+		//evita document replace
 		//seleciona apenas nome, email e emergencia, independente da quantidade de parâmetros
 		var dados = {
 			"nome" : req.body.nome,
