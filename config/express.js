@@ -40,5 +40,10 @@ module.exports = function () {
       .then('controllers')
       .then('routes')
       .into(app);
+
+      app.get('*', function (req, res){ //criacao da rota com identificador * abaixo das demais rotas
+          res.status(404).render('404');
+      });
+
    return app;
 };
