@@ -48,8 +48,21 @@ module.exports = function(app) {
    }
 
    controller.salvaContato = function(req, res) {
-		if(req.body._id) { // Atualização
-			Contato.findByIdAndUpdate(req.body._id, req.body).exec()
+	   var _id = req.body._id;
+
+	   /*
+ Independente da quantidade de parâmetros,
+ apenas selecionamos o nome, email e emergencia:
+ */
+
+ 		var dados = {
+			 "nome" : req.body.nome,
+			 "email": req.body.email,
+			 "emergencia": req.body.emergencia || null
+		 };
+
+		if(_id) { //alterado parametro para _id (req.body._id)
+			Contato.findByIdAndUpdate(_id, dados).exec()
 				.then({
 					function(contato) {
 						res.json(contato);
@@ -61,7 +74,7 @@ module.exports = function(app) {
 				});
 		}
 		else { // Inserção
-			Contato.create(req.body).then(
+			Contato.create(dados).then( //neste caso quando o contato criar o contato ira chamar dados que esta projegido por req.body
 				function(contato) {
 					// HTTP 201: criado					
 					res.status(201).json(contato);
