@@ -7,6 +7,9 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var passport = require('passport');
 
+var helmet = require('helmet'); // habilitando os middlewares
+
+
 module.exports = function () {
    var app = express();
    app.set('port', 3000);
@@ -27,6 +30,21 @@ module.exports = function () {
    }));
    app.use(passport.initialize());
    app.use(passport.session());
+
+   app.use(helmet()); // Inicializando o helmet
+
+   //Omitindo a informção no header http
+   app.use(helmet.hidePoweredBy({ setTo: 'PHP 5.5.14' })); 
+
+    //Este método ná permite que a apicção seja colocada dentro de um frame ou iframe
+   app.use(helmet.frameguard());
+
+   //Este método confere proteção contra XSS
+   app.use(helmet.xssFilter());
+
+   //Este método  não permite que aquivos que são sejam
+   //MIME type sejam carregados 
+   app.use(helmet.nosniff());
 
    //home(app);
    load('models', {cwd: 'app'})
