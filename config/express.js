@@ -2,6 +2,7 @@ var express = require('express');
 //var home = require('../app/routes/home');
 var load = require('express-load');
 var bodyParser = require('body-parser');
+var helmet = require('helmet'); //habilita todos middlewares do Helmet
 
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
@@ -27,6 +28,12 @@ module.exports = function () {
    }));
    app.use(passport.initialize());
    app.use(passport.session());
+   app.use(helmet.frameguard()); //mitiga o ataque clickjacking -> substitui o xframe
+   app.use(helmet.nosniff()); //não permite que o navegador carregue link e script que não sejam dos MIME
+   app.disable('x-powered-by'); //desabilita a middleware  x-powered-by do helmet 
+   app.use(helmet.xssFilter); //previne contra Tags maliciosas adicionadas por um <script> que direciona para um script malicioso
+   app.use(helmet.hidePoweredBy({ setTo: 'PHP 5.5.14'})); //fornece informaçao falsa atraves do middleware helmet.poweredBy
+   app.use(helmet()); //usa o helmet no express
 
    //home(app);
    load('models', {cwd: 'app'})
