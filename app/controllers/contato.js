@@ -3,6 +3,8 @@ module.exports = function(app) {
    
    var Contato = app.models.contato;
 
+   var sanitize = require('mongo-sanitize'); //adiciona o mongo sanitize no express
+
    controller.listaContatos = function(req, res) {
       Contato.find().populate('emergencia').exec().then(
 			function(contatos) {
@@ -33,7 +35,8 @@ module.exports = function(app) {
    };
 
    controller.removeContato = function(req, res) {
-		Contato.remove({_id: req.params.id}).exec().then(
+	   var _id = sanitize(req.params.id);  //código do sanitize que irá remover valores com $ para evitar query de SQL injection
+		Contato.remove({"_id" : _id}).exec().then(
 			function() {
 				// HTTP 204: OK, sem conteúdo a seguir
 				res.status(204).end();
