@@ -3,6 +3,8 @@ module.exports = function(app) {
    
    var Contato = app.models.contato;
 
+   var sanitize = require('mongo-sanitize'); //adiciona o mongo sanitize no express
+
    controller.listaContatos = function(req, res) {
       Contato.find().populate('emergencia').exec().then(
 			function(contatos) {
@@ -33,7 +35,8 @@ module.exports = function(app) {
    };
 
    controller.removeContato = function(req, res) {
-		Contato.remove({_id: req.params.id}).exec().then(
+	   var _id = sanitize(req.params.id);  //código do sanitize que irá remover valores com $ para evitar query de SQL injection
+		Contato.remove({"_id" : _id}).exec().then(
 			function() {
 				// HTTP 204: OK, sem conteúdo a seguir
 				res.status(204).end();
@@ -45,8 +48,21 @@ module.exports = function(app) {
    }
 
    controller.salvaContato = function(req, res) {
-		if(req.body._id) { // Atualização
-			Contato.findByIdAndUpdate(req.body._id, req.body).exec()
+	   var _id = req.body._id;
+
+	   /*
+ Independente da quantidade de parâmetros,
+ apenas selecionamos o nome, email e emergencia:
+ */
+
+ 		var dados = {
+			 "nome" : req.body.nome,
+			 "email": req.body.email,
+			 "emergencia": req.body.emergencia || null
+		 };
+
+		if(_id) { //alterado parametro para _id (req.body._id)
+			Contato.findByIdAndUpdate(_id, dados).exec()
 				.then({
 					function(contato) {
 						res.json(contato);
@@ -58,7 +74,7 @@ module.exports = function(app) {
 				});
 		}
 		else { // Inserção
-			Contato.create(req.body).then(
+			Contato.create(dados).then( //neste caso quando o contato criar o contato ira chamar dados que esta projegido por req.body
 				function(contato) {
 					// HTTP 201: criado					
 					res.status(201).json(contato);
