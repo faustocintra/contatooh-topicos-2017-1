@@ -55,7 +55,7 @@ module.exports = function(app) {
 			"nome" : req.body.nome,
 			"email" : req.body.email,
 			"emergencia" : req.body.emergencia || null
-		}
+		};
 		if(_id) { // Atualização
 			Contato.findByIdAndUpdate(_id, dados).exec()
 				.then({

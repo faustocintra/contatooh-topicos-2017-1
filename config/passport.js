@@ -7,8 +7,8 @@ module.exports = function() {
    var Usuario = mongoose.model('Usuario');
 
    passport.use(new GitHubStrategy({
-      clientID: '36398af2fdb600870e0e',
-      clientSecret: '86f021600cad2f781c82bef2ea3a4707046707de',
+      clientID: '8d3a28b0d2d0251d2576',
+      clientSecret: '6ff3d6b7fa397c943cfa0c568cc2d7dd1c7d69bb',
       callbackURL: 'http://localhost:3000/auth/github/callback'
    }, function(accessToken, refreshToken, profile, done) {
 
