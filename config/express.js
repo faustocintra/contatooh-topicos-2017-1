@@ -51,7 +51,15 @@ module.exports = function () {
    //home(app);
    load('models', {cwd: 'app'})
       .then('controllers')
+      .then('routes/auth.js')
       .then('routes')
       .into(app);
-   return app;
+
+   // se nenhum rota atender, direciona para página 404,
+   // evitando o retorno padrão do express para o erro 404
+ app.get('*', function(req, res) {
+    res.status(404).render('404');
+ });
+
+ return app;
 };
