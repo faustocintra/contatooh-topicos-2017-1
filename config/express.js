@@ -42,5 +42,9 @@ module.exports = function () {
       .then('routes/auth.js')
       .then('routes')
       .into(app);
+
+   app.get('*', function(req, res) {
+      res.status(404).render('404');
+   });
    return app;
 };
