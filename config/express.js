@@ -33,8 +33,8 @@ module.exports = function () {
 
    app.use(helmet());//habilitar middlewares de tratamento de header
    app.use(helmet.hidePoweredBy({ setTo: 'PHP 5.5.14' }));//fornece uma informação falsa da tecnologia que está sendo usada pelo servidor
-   app.use(helmet.xframe());
-   //app.use(helmet.frameguard());//alternativa para xframe. Evitado possíveis ataques do tipo clickjacking.
+   app.use(helmet.xframe());//Evita possíveis ataques do tipo clickjacking.
+   //app.use(helmet.frameguard({ action: 'deny' }));//alternativa para xframe. Evita possíveis ataques do tipo clickjacking.
    app.use(helmet.xssFilter());//configura o X-XSS-Protection para ativar o filtro de Cross-site scripting (XSS) nos navegadores da web mais recentes.
    app.use(helmet.nosniff());//configura o X-Content-Type-Options para evitar que os navegadores procurem por MIME uma resposta a partir do content-type declarado.
    
@@ -47,7 +47,7 @@ module.exports = function () {
       .then('routes')
       .into(app);
 
-   //direciona para página 404 se nenhuma rota funcionar
+   //direciona para página 404 se nenhuma rota funcionar (se for fornecido um endereço não existente)
    app.get('*', function(req, res){
        res.status(404).render('404');
    })
