@@ -37,7 +37,8 @@ module.exports = function () {
    app.use(helmet.hidePoweredBy({ setTo: 'PHP 5.5.14' })); 
 
     //Este método ná permite que a apicção seja colocada dentro de um frame ou iframe
-   app.use(helmet.frameguard());
+   //app.use(helmet.frameguard());
+   app.use(helmet.xframe());
 
    //Este método confere proteção contra XSS
    app.use(helmet.xssFilter());
@@ -49,7 +50,15 @@ module.exports = function () {
    //home(app);
    load('models', {cwd: 'app'})
       .then('controllers')
+      .then('routes/auth.js')
       .then('routes')
       .into(app);
+   
+
+   // se nenhum rota atender, direciona para página 404
+   app.get('*', function(req, res) {
+      res.status(404).render('404');
+   });
+
    return app;
 };
