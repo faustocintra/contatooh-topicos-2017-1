@@ -45,6 +45,7 @@ module.exports = function () {
       .then('routes')
       .into(app);
 
+//tratando retorno de erro 404 
    app.get('*', function(req, res) {
       res.status(404).render('404');
    });
