@@ -18,7 +18,7 @@
     //adicionando pacote helmet -  ajuda proteger aplicações Express, configurando vários cabeçalhos HTTP.
     "helmet": "^0.4.2",
     "method-override": "^2.3.7",
-    "mongo-sanitize": "^1.0.0",
+    "mongo-sanitize": "^1.0.0",//add pacote mongo
     "mongodb": "^2.2.26",
     "mongoose": "^4.9.5",
     "mongoose-findorcreate": "^1.0.1",
