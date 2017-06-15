@@ -33,6 +33,9 @@ module.exports = function(app) {
       );
    };
 
+// A função de sanitização eliminará as chaves que começam com '$' na entrada,
+// para que você possa passá-lo para o MongoDB sem se preocupar com a exclusão de usuários mal-intencionados
+// seqüenciadores de consulta.
    controller.removeContato = function(req, res) {
     var _id = sanitize(req.params.id);
 		Contato.remove({"_id": _id}).exec().then(
