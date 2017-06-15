@@ -7,7 +7,7 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var passport = require('passport');
 
-var helmet = require('helmet');
+var helmet = require('helmet');//requerimento de pacote helmet
 
 module.exports = function () {
    var app = express();
@@ -30,9 +30,11 @@ module.exports = function () {
    app.use(passport.initialize());
    app.use(passport.session());
 
+   //A execução app.use(helmet())não inclui todas essas funções de middleware por padrão.
+   //Sendo um conjunto de 12 funcoes menores
    app.use(helmet());
-   app.use(helmet.xframe());
-   app.use(helmet.xssFilter());
+   app.use(helmet.xframe());//cabeçalho de resposta HTTP
+   app.use(helmet.xssFilter());//define o X-XSS-Protectioncabeçalho evitando ataques XSS refletidos
    app.use(helmet.nosniff());
    app.disable('x-powered-by');
 
