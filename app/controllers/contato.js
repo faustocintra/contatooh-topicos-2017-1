@@ -2,6 +2,7 @@ module.exports = function(app) {
    var controller = {};
    
    var Contato = app.models.contato;
+   var sanitize = require('mongo-sanitize');
 
    controller.listaContatos = function(req, res) {
       Contato.find().populate('emergencia').exec().then(
@@ -22,7 +23,7 @@ module.exports = function(app) {
 				console.log(req.params.id);
 				if(! contato) {
 					throw new Error('Contato não encontrado');
-				}
+				} 
 				res.json(contato);
 			},
 			function(erro) {
@@ -33,7 +34,9 @@ module.exports = function(app) {
    };
 
    controller.removeContato = function(req, res) {
-		Contato.remove({_id: req.params.id}).exec().then(
+	   var _id = sanitize(req.params.id);
+		Contato.remove({"_id" : _id}).exec()
+		.then(
 			function() {
 				// HTTP 204: OK, sem conteúdo a seguir
 				res.status(204).end();
@@ -41,8 +44,8 @@ module.exports = function(app) {
 			function(erro) {
 				return console.error(erro);
 			}
-		);
-   }
+	 	);
+   };
 
    controller.salvaContato = function(req, res) {
 		if(req.body._id) { // Atualização
