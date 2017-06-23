@@ -36,6 +36,10 @@ module.exports = function(app) {
 
    controller.removeContato = function(req, res) {
 		var _id = sanitize(req.params.id);
+		/* 
+			Ao fazer o delete usando o sanitize evitamos os ataques de 
+			query selectors
+		*/
 		Contato.remove({"_id" : _id}).exec()
 		.then(
 			function(){

@@ -1,21 +1,7 @@
 var express = require('express');
 //var home = require('../app/routes/home');
-var load = require('express-load');
-
-// código anterior omitido
-load('models', {cwd: 'app'})
-    .then('controllers')
-    .then('routes/auth.js')
-    .then('routes')
-    .into(app);
-
-// se nenhum rota atender, direciona para página 404
-app.get('*', function(req, res) {
-    res.status(404).render('404');
-});
-  
+var load = require('express-load');  
 var bodyParser = require('body-parser');
-
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var passport = require('passport');
@@ -62,11 +48,17 @@ module.exports = function () {
    incluídos na página */
    app.use(helmet.nosniff());
 
-
    //home(app);
    load('models', {cwd: 'app'})
       .then('controllers')
+      .then('routes/auth.js')
       .then('routes')
       .into(app);
+  
+   //Verifica se a página existe, senão existe faz o redirecionamento 404
+   app.get('*', function(req, res){
+      res.status(404).render('404');
+    });
+
    return app;
 };
