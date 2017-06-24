@@ -15,7 +15,6 @@
     "express": "^4.14.1",
     "express-load": "^1.1.15",
     "express-session": "^1.15.3",
-    "frameguard": "^3.0.0",
     "helmet": "^3.6.1",
     "method-override": "^2.3.7",
     "mongo-sanitize": "^1.0.0",
