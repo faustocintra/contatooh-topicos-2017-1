@@ -18,9 +18,9 @@ module.exports = function() {
          function(erro, usuario) {
             if(erro) {
                console.log(erro);
-               return done(erro); // Prossegue COM ERRO
+               return done(erro);
             }
-            return done(null, usuario); // Prossegue SEM ERRO
+            return done(null, usuario);
          }
       );
 

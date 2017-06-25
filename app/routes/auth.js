@@ -1,5 +1,7 @@
 var passport = require('passport');
 
+// Método para autenticação Auth 2.0
+
 module.exports = function(app) {
 
    app.get('/auth/github', passport.authenticate('github'));

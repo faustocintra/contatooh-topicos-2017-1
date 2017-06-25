@@ -5,7 +5,6 @@ module.exports = function() {
    var schema = mongoose.Schema({
       nome: {
          type: String,
-         //maxlength: 100,
          required: true
       },
       email: {
