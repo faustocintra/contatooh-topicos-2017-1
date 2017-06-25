@@ -6,8 +6,10 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var passport = require('passport');
+// tornará sua aplização mais segura 
 var helmet = require('helmet');
 var frameguard = require('frameguard');
+
 
 module.exports = function () {
    var app = express();
@@ -30,6 +32,9 @@ module.exports = function () {
    app.use(passport.initialize());
    app.use(passport.session());
    
+
+   // Inicializando o helmet
+   app.use(helmet());
    //Previne ataque do tipo clickjacking.
    //Evitando que a nossa aplicação seja referenciada por um iframe ou frame com códigos maliciosos.
    app.use(frameguard());
@@ -40,18 +45,26 @@ module.exports = function () {
 
    //Faz com que o navegador não carregue arquivos diferentes da qual as tags link e script aceitam.
    //Ou seja serão aceitos somente os arquivos que as tags link(text/css) e script(text/javascript) aceitam.
-//    app.use(helmet.noSniff())
+   app.use(helmet.noSniff());
 
    //Fornecendo informação falsa sobre a tecnologia usad, para dificultar o reconhecimento da tecnologia usada na aplicação.
    //Assim evitando a exploração de vulnerabilidades da tecnologia usada.
    app.disable('x-powered-by');
 
 
+// Esta sendo direcionada para rotas contindas no auth.js  
+load('models', {cwd: 'app'})
+    .then('controllers')
+    .then('routes/auth.js')
+    .then('routes')
+    .into(app);
 
-   //home(app);
-   load('models', {cwd: 'app'})
-      .then('controllers')
-      .then('routes')
-      .into(app);
+
+// Irá informar ao úsuario que se rota não for encontrada retornará para página 404
+  app.get('*', function(req, res) {
+     res.status(404).render('404');
+  })
+
+
    return app;
 };

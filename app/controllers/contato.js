@@ -3,7 +3,6 @@
 //Solucionar os problemas de injeção query selector 
 var sanitize = require('mongo-sanitize');
 
-
 var contatos = [
    {
       _id: 1,
@@ -22,127 +21,99 @@ var contatos = [
    }
 ];
 
-module.exports = function() {
-   var controller = {};
-   
-   controller.listaContatos = function(req, res) {
-      res.json(contatos);
-   };
+module.exports = function (app) {
 
-   controller.obtemContato = function(req, res) {
-      //console.log(req.params.id);
+  var Contato = app.models.contato;
 
-      var idContato = req.params.id;
-      
-      var filtrados = contatos.filter(function(contato) {
-         return contato._id == idContato;
-      });
+  var controller = {}
 
-      // O método filter sempre retorna um vetor,
-      // mesmo que haja um só resultado. Por isso,
-      // se houver encontrado alguém, pegamos a primeira
-      // posição (0) do vetor
-      if(filtrados.length > 0) { // Encontrou algo
-         var contato = filtrados[0];
-         res.json(contato);
+  controller.listaContatos = function(req, res) {
+    
+    Contato.find().populate('emergencia').exec()
+    .then(
+      function(contatos) {
+         res.json(contatos); 
+       },
+       function(erro) {
+         console.error(erro)
+         res.status(500).json(erro);
+       } 
+    );    
+  };
+  
+  controller.obtemContato = function(req, res) {
+
+    var _id = req.params.id;
+    Contato.findById(_id).exec()
+    .then(
+      function(contato) {
+        if (!contato) throw new Error("Contato não encontrado");
+        res.json(contato)     
+      }, 
+      function(erro) {
+        console.log(erro);
+        res.status(404).json(erro)
       }
-      else {
-         res.status(404).send('Contato ' + idContato +
-            ' não encontrado.');
+    );    
+  };
+
+  controller.removeContato = function(req, res) { 
+    //pegará o id e verificará se variavel é mal intencionada 
+    var _id = sanitize(req.params.id);
+
+    //var _id = req.params.id;
+
+    //remove um contato do banco pelo seu ObjectId
+    // Espera receber uma string
+    //removeria-se todos os contatos no banco
+    //Contato.remove({"_id" : "$ne" : null}).exec
+    Contato.remove({"_id" : _id}).exec()
+    .then(
+      function() {
+        res.end();  
+      }, 
+      function(erro) {
+        return console.error(erro);
       }
-   }
+    );
+  };
 
-   controller.removeContato = function(req, res) {
-      
-      //pegará o id e verificará se variavel é mal intencionada 
-      var _id = sanitize(req.params.id);
-      
-      //var _id = req.params.id;
+  controller.salvaContato = function(req, res) {
 
-      //remove um contato do banco pelo seu ObjectId
-      // Espera receber uma string 
-      Contato.remove({"_id" : _id}).exec()
-      
-      //removeria-se todos os contatos no banco
-      //Contato.remove({"_id" : "$ne" : null}).exec
-      .then(
-         function() {
-            res.end();
-         },
-         function(erro){
-            return console.error(erro)
-         }
-      );
-      
+    // Ele pega tudo que esta no body atribuindo e jogando na variavel privada
+    var _id = req.body._id;
 
-   /*
+    // Será limitado o objecto pegando as informações necessárias
+    var dados = { 
+      "nome" : req.body.nome, 
+      "email" : req.body.email, 
+      "emergencia" : req.body.emergencia || null
+    };
 
-      contatos = contatos.filter(function (contato) {
-         return contato._id != req.params.id;
-      });
-      // HTTP 204: OK, mas não há conteúdo na resposta
-      res.status(204).end();
-  */
-   };
-
-   var ID_CONTATO_INC = 3; // Já existem três contatos
-
-   controller.salvaContato = function(req, res) {
-      
-     // Ele pega tudo que esta no body atribuindo e jogando na variavel privada
-      var _id = req.body._id;
-
-      // Será limitado o objecto pegando as informações necessárias
-      var dados = {
-         "nome" : req.body.nome ,
-         "email" : req.body.email,
-         "emergencia" : req.body.emergencia || null
-      };
-
-      if(_id) {
-      Contato.findByIdAndUpdate(_id, dados).exec()
-         .then(
-            function(contato) {
-            res.json(contato);
-            },
-            function(erro) {
-            console.error(erro)
-            res.status(500).json(erro);
-            }
-         );
-      } else {
+    if(_id) {
+     Contato.findByIdAndUpdate(_id, dados).exec()
+     .then(
+      function(contato) {
+        res.json(contato);
+      }, 
+      function(erro) {
+        console.error(erro)
+        res.status(500).json(erro);
+      }
+     );
+    } else {
       Contato.create(dados)
-         .then(
-            function(contato) {
-            res.status(201).json(contato);
-            },
-            function(erro) {
-            console.log(erro);
-            res.status(500).json(erro);
-            }
-         );
-      }
+      .then(
+        function(contato) {
+          res.status(201).json(contato);
+        }, 
+        function(erro) {
+          console.log(erro);
+          res.status(500).json(erro);
+        }
+      );
+    }
+  };
 
-   }
-
-   function adiciona(novo) {
-      novo._id = ++ID_CONTATO_INC;
-      contatos.push(novo);
-      return novo;
-   }
-
-   function atualiza(existente) {
-
-      contatos = contatos.map(function(contato){
-         if(contato._id == existente._id) {
-            contato = existente;
-         }
-         return contato;
-      });
-      
-      return existente;
-      
-   }
-
-   return controller;
+  return controller;
 };
