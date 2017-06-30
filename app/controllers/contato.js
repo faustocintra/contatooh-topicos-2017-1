@@ -1,4 +1,5 @@
 module.exports = function(app) {
+   var sanitize = require('mongo-sanitize');
    var controller = {};
    
    var Contato = app.models.contato;
@@ -32,8 +33,12 @@ module.exports = function(app) {
       );
    };
 
+// A função de sanitização eliminará as chaves que começam com '$' na entrada,
+// para que você possa passá-lo para o MongoDB sem se preocupar com a exclusão de usuários mal-intencionados
+// seqüenciadores de consulta.
    controller.removeContato = function(req, res) {
-		Contato.remove({_id: req.params.id}).exec().then(
+    var _id = sanitize(req.params.id);
+		Contato.remove({"_id": _id}).exec().then(
 			function() {
 				// HTTP 204: OK, sem conteúdo a seguir
 				res.status(204).end();
@@ -45,8 +50,16 @@ module.exports = function(app) {
    }
 
    controller.salvaContato = function(req, res) {
-		if(req.body._id) { // Atualização
-			Contato.findByIdAndUpdate(req.body._id, req.body).exec()
+    var _id = req.body._id;
+
+    var dados = {
+      "nome" : req.body.nome,
+      "email" : req.body.email,
+      "emergencia" : req.body.emergencia || null
+    };
+
+		if(_id) { // Atualização
+			Contato.findByIdAndUpdate(_id, dados).exec()
 				.then({
 					function(contato) {
 						res.json(contato);
@@ -58,7 +71,7 @@ module.exports = function(app) {
 				});
 		}
 		else { // Inserção
-			Contato.create(req.body).then(
+			Contato.create(dados).then(
 				function(contato) {
 					// HTTP 201: criado					
 					res.status(201).json(contato);
