@@ -4,7 +4,7 @@ var app = require('./config/express')(); // Cuidado com
 
 require('./config/passport')( /* vazio */);
 var dbConn = require('./config/database');
-dbConn('mongodb://localhost/contatooh_top');                                         
+dbConn('mongodb://127.0.0.1/contatooh_top');                                         
 
 http
    .createServer(app)
