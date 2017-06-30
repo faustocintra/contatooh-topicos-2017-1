@@ -1,5 +1,7 @@
 module.exports = function(app) {
    var controller = {};
+
+   var sanitize = require('mongo-sanitize');
    
    var Contato = app.models.contato;
 
@@ -33,41 +35,56 @@ module.exports = function(app) {
    };
 
    controller.removeContato = function(req, res) {
-		Contato.remove({_id: req.params.id}).exec().then(
-			function() {
-				// HTTP 204: OK, sem conteúdo a seguir
+		var _id = sanitize(req.params.id);
+		/* 
+			Ao fazer o delete usando o sanitize evitamos os ataques de 
+			query selectors
+		*/
+		Contato.remove({"_id" : _id}).exec()
+		.then(
+			function(){
 				res.status(204).end();
 			},
-			function(erro) {
+			function(erro){
 				return console.error(erro);
 			}
 		);
-   }
+   };
 
    controller.salvaContato = function(req, res) {
-		if(req.body._id) { // Atualização
-			Contato.findByIdAndUpdate(req.body._id, req.body).exec()
-				.then({
-					function(contato) {
-						res.json(contato);
-					},
-					function(erro) {
-						console.error(erro);
-						res.status(500).json(erro);
-					}
-				});
-		}
-		else { // Inserção
-			Contato.create(req.body).then(
-				function(contato) {
-					// HTTP 201: criado					
+		var _id = req.body._id;
+		/*
+			Seleciona apenas o nome, email e emergencia do
+			post do formulário
+		*/
+		var dados = {
+			"nome" : req.body.nome,
+			"email" : req.body.email,
+			"emergencia" : req.body.emergencia || null
+		};
+
+		if(_id){
+			Contato.findByIdAndUpdate(_id, dados).exec()
+			.then(
+				function(contato){
+					res.json(contato);
+				},
+				function(erro){
+					console.error(erro)
+					res.status(500).json(erro);
+				}
+			);
+		} else{
+			Contato.create(req.body)
+			.then(
+				function(contato){
 					res.status(201).json(contato);
 				},
-				function(erro) {
+				function(erro){
 					console.log(erro);
 					res.status(500).json(erro);
 				}
-			)
+			);
 		}
    };
 
