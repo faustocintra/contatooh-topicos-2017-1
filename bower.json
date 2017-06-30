@@ -1,9 +1,9 @@
 {
   "name": "contatooh",
-  "description": "Agenda de contatos",
+  "description": "Agendamento de contatos",
   "main": "server.js",
   "authors": [
-    "Fausto G. Cintra <fausto@fgcintra.pro.br>"
+    "Tarsis Costa Cruz <costacruzt@gmail.com>"
   ],
   "license": "ISC",
   "homepage": "",

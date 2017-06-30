@@ -1,9 +1,6 @@
 angular.module('contatooh')
    .controller('ContatoController', 
       function($scope, $routeParams, $resource, Contato) {
-         
-         //var Contato = $resource('contatos/:id');
-
          $scope.mensagem = {};
 
          if($routeParams.contatoId) {
@@ -19,7 +16,7 @@ angular.module('contatooh')
                   console.log(erro);
                }
             );
-         } else { // Novo contato
+         } else { // Instancia de novo contato
             $scope.contato = new Contato();
          }
 
@@ -41,8 +38,7 @@ angular.module('contatooh')
             );      
          };
 
-			// Preenchimento de um vetor com todos os contatos
-			// anteriormente cadastrados
+			// Faz o preenchimento do vetor com os dados que foram cadastrados
 			Contato.query(function(contatos) {
 				$scope.contatos = contatos;
 			}); 
