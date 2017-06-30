@@ -6,7 +6,7 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var passport = require('passport');
-// tornará sua aplização mais segura 
+// tornará sua aplicação mais segura 
 var helmet = require('helmet');
 var frameguard = require('frameguard');
 
