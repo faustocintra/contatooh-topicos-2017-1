@@ -6,8 +6,11 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var passport = require('passport');
-// tornará sua aplicação mais segura 
+
+// Importando helmet 
 var helmet = require('helmet');
+
+//Importando frameguard (substituto do xframe)
 var frameguard = require('frameguard');
 
 
@@ -35,6 +38,7 @@ module.exports = function () {
 
    // Inicializando o helmet
    app.use(helmet());
+   
    //Previne ataque do tipo clickjacking.
    //Evitando que a nossa aplicação seja referenciada por um iframe ou frame com códigos maliciosos.
    app.use(frameguard());
