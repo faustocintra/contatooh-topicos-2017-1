@@ -3,6 +3,7 @@
 //Solucionar os problemas de injeção query selector 
 var sanitize = require('mongo-sanitize');
 
+//array contatos
 var contatos = [
    {
       _id: 1,
@@ -58,6 +59,7 @@ module.exports = function (app) {
   };
 
   controller.removeContato = function(req, res) { 
+	
     //pegará o id e verificará se variavel é mal intencionada 
     var _id = sanitize(req.params.id);
 
